@@ -1,0 +1,49 @@
+{
+  "name": "react-interpolate-component",
+  "version": "0.0.0",
+  "description": "A component for React that renders elements into a format string containing replacement fields",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/martinandert/react-interpolate-component.git"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "interpolations",
+    "interpolate",
+    "substitution",
+    "substitute",
+    "sprintf",
+    "named-arguments",
+    "format"
+  ],
+  "author": {
+    "name": "Martin Andert",
+    "email": "mandert@gmail.com"
+  },
+  "license": "MIT",
+  "scripts": {
+    "test": "make test"
+  },
+  "bugs": {
+    "url": "https://github.com/martinandert/react-interpolate-component/issues"
+  },
+  "homepage": "https://github.com/martinandert/react-interpolate-component",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "react": "~0.9.0"
+  },
+  "devDependencies": {
+    "semver": "~2.2.1",
+    "node-dev": "~2.1.6",
+    "jshint": "~2.4.3",
+    "mocha": "~1.17.1",
+    "connect-browserify": "~1.0.0",
+    "express": "~3.4.8",
+    "node-jsx": "~0.2.1",
+    "reactify": "~0.7.0",
+    "react": "~0.9.0"
+  }
+}
