@@ -37,7 +37,7 @@ var MyApp = React.createClass({
     var format = '%(firstName)s is %(age)s %(unit)s old.';
 
     return React.DOM.div(null, Interpolate(props, format));
-  };
+  }
 });
 ```
 
