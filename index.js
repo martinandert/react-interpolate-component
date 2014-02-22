@@ -39,6 +39,10 @@ var Interpolate = React.createClass({
       var child = (index % 2 === 0) ? match : props[match];
 
       if (!React.isValidComponent(child)) {
+        if (match.length === 0) {
+          return memo;
+        }
+
         if (unsafe) {
           child = React.DOM.span({ dangerouslySetInnerHTML: { __html: child } });
         } else {
