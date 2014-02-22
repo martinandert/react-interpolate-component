@@ -28,6 +28,7 @@ var Interpolate = React.createClass({
   render: function() {
     var format = this.props.children || '';
     var parent = this.props.component;
+    var unsafe = this.props.unsafe === true;
 
     invariant(
       isString(format) || isArray(format) && format.length === 1 && isString(format = format[0]),
@@ -40,7 +41,11 @@ var Interpolate = React.createClass({
       if (React.isValidComponent(child)) {
         child = cloneWithProps(child, { key: index });
       } else {
-        child = React.DOM.span({ key: index }, child);
+        if (unsafe) {
+          child = React.DOM.span({ key: index, dangerouslySetInnerHTML: { __html: child } });
+        } else {
+          child = React.DOM.span({ key: index }, child);
+        }
       }
 
       return child;

@@ -61,6 +61,22 @@ describe('The Interpolate component', function() {
     assert.doesNotMatch(markup, /NO/);
   });
 
+  it('escapes HTML markup in the format string by default', function() {
+    var format = 'foo <script>alert("Danger!");</script> bar';
+    var markup = render(Interpolate(null, format));
+
+    assert.doesNotMatch(markup, /<\/?script>/);
+  });
+
+  describe('when providing an `unsafe` prop which is set to `true`', function() {
+    it('renders HTML markup present in the format string', function() {
+      var format = 'foo <script>alert("dangerous!");</script> bar';
+      var markup = render(Interpolate({ unsafe: true }, format));
+
+      assert.matches(markup, /<script>alert\("dangerous!"\);<\/script>/);
+    });
+  });
+
   it('is cool', function() {
     assert(true);
   });

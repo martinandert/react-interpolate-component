@@ -53,6 +53,8 @@ The MyApp component shown above renders the following (simplified) HTML:
 
 All props get transferred to Interpolate's container component (which is a `<span>` by default).
 
+For security reasons, all HTML markup present in the format string will be escaped. You can undermine this by providing a prop named "unsafe" which is set to `true`.
+
 
 ## Example
 
