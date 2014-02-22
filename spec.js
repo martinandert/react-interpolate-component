@@ -3,6 +3,9 @@ var React       = require('react');
 var Interpolate = require('./');
 var render      = React.renderComponentToString;
 
+// hack: suppress React console warnings
+console.warn = function() {};
+
 assert.matches = function(actual, expected, message) {
   if (!expected.test(actual)) {
     assert.fail(actual, expected, message, '!~');
@@ -26,9 +29,10 @@ describe('The Interpolate component', function() {
     assert.matches(markup, /^<section/);
   });
 
-  it('allows no child to be provided', function() {
-    assert.doesNotThrow(function() {
-      render(Interpolate());
+  it('rejects everything as child that is not a string', function() {
+    // How can something like this be properly testet?
+    [undefined, null, {}, [], function() {}, new Date, true, 123].forEach(function(object) {
+      assert.throws(function() { render(Interpolate(null, object)); }, /invariant/i);
     });
   });
 
