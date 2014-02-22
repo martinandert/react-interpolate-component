@@ -1,8 +1,7 @@
 'use strict';
 
-var React           = require('react');
-var invariant       = require('react/lib/invariant');
-var cloneWithProps  = require('react/lib/cloneWithProps');
+var React     = require('react');
+var invariant = require('react/lib/invariant');
 
 var isArray = function(object) {
   return Object.prototype.toString.call(object) === '[object Array]';
@@ -26,30 +25,31 @@ var Interpolate = React.createClass({
   },
 
   render: function() {
-    var format = this.props.children || '';
-    var parent = this.props.component;
-    var unsafe = this.props.unsafe === true;
+    var props  = this.props;
+    var format = props.children || '';
+    var parent = props.component;
+    var unsafe = props.unsafe === true;
 
     invariant(
       isString(format) || isArray(format) && format.length === 1 && isString(format = format[0]),
       'Interpolate expects a format string as only child'
     );
 
-    var children = format.split(REGEXP).map(function(match, index) {
-      var child = (index % 2 === 0) ? match : this.props[match];
+    var children = format.split(REGEXP).reduce(function(memo, match, index) {
+      var child = (index % 2 === 0) ? match : props[match];
 
-      if (React.isValidComponent(child)) {
-        child = cloneWithProps(child, { key: index });
-      } else {
+      if (!React.isValidComponent(child)) {
         if (unsafe) {
-          child = React.DOM.span({ key: index, dangerouslySetInnerHTML: { __html: child } });
+          child = React.DOM.span({ dangerouslySetInnerHTML: { __html: child } });
         } else {
-          child = React.DOM.span({ key: index }, child);
+          child = React.DOM.span(null, child);
         }
       }
 
-      return child;
-    }, this);
+      memo['_' + index] = child;
+
+      return memo;
+    }, {});
 
     return this.transferPropsTo(parent(null, children));
   }

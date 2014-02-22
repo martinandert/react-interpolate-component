@@ -43,22 +43,8 @@ describe('The Interpolate component', function() {
     var format = 'lala %(foo)s lulu %(comp)s lili %(number)s lele';
     var markup = render(Interpolate(props, format));
 
-    assert.matches(markup, /lala/);
-    assert.matches(markup, /lulu/);
-    assert.matches(markup, /lili/);
-    assert.matches(markup, /lele/);
-
-    assert.matches(markup, /bar/);
-    assert.matches(markup, /42/);
-    assert.matches(markup, /<i [^>]*>baz<\/i>/);
-
-    assert.doesNotMatch(markup, /%\(/);
-    assert.doesNotMatch(markup, /\)s/);
-    assert.doesNotMatch(markup, /foo/);
-    assert.doesNotMatch(markup, /comp/);
-    assert.doesNotMatch(markup, /number/);
-    assert.doesNotMatch(markup, /no/);
-    assert.doesNotMatch(markup, /NO/);
+    assert.matches(markup, /lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/);
+    assert.doesNotMatch(markup, /%\(|\)s|foo|comp|number|no|NO/);
   });
 
   it('escapes HTML markup in the format string by default', function() {
