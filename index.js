@@ -25,30 +25,43 @@ var Interpolate = React.createClass({
     var format = props.children;
     var parent = props.component;
     var unsafe = props.unsafe === true;
+    var content;
 
     invariant(isString(format), 'Interpolate expects a format string as only child');
 
-    var children = format.split(REGEXP).reduce(function(memo, match, index) {
-      var child = (index % 2 === 0) ? match : props[match];
+    if (unsafe) {
+      content = format.split(REGEXP).reduce(function(memo, match, index) {
+        var html = (index % 2 === 0) ? match : props[match];
 
-      if (!React.isValidComponent(child)) {
-        if (match.length === 0) {
-          return memo;
+        if (React.isValidComponent(html)) {
+          throw new Error('cannot interpolate a React component into unsafe text');
         }
 
-        if (unsafe) {
-          child = React.DOM.span({ dangerouslySetInnerHTML: { __html: child } });
-        } else {
+        memo += html;
+
+        return memo;
+      }, '');
+
+      return this.transferPropsTo(parent({ dangerouslySetInnerHTML: { __html: content } }));
+    } else {
+      content = format.split(REGEXP).reduce(function(memo, match, index) {
+        var child = (index % 2 === 0) ? match : props[match];
+
+        if (!React.isValidComponent(child)) {
+          if (match.length === 0) {
+            return memo;
+          }
+
           child = React.DOM.span(null, child);
         }
-      }
 
-      memo['_' + index] = child;
+        memo['_' + index] = child;
 
-      return memo;
-    }, {});
+        return memo;
+      }, {});
 
-    return this.transferPropsTo(parent(null, children));
+      return this.transferPropsTo(parent(null, content));
+    }
   }
 });
 

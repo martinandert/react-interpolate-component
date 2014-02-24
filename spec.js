@@ -58,12 +58,20 @@ describe('The Interpolate component', function() {
     assert.doesNotMatch(markup, /<\/?script>/);
   });
 
-  describe('when providing an `unsafe` prop which is set to `true`', function() {
+  describe('when providing an `unsafe` prop set to `true`', function() {
     it('renders HTML markup present in the format string', function() {
-      var format = 'foo <script>alert("dangerous!");</script> bar';
-      var markup = render(Interpolate({ unsafe: true }, format));
+      var format = 'foo <script>alert("%(alert)s");</script> bar';
+      var markup = render(Interpolate({ unsafe: true, alert: 'Danger!' }, format));
 
-      assert.matches(markup, /<script>alert\("dangerous!"\);<\/script>/);
+      assert.matches(markup, /<script>alert\("Danger!"\);<\/script>/);
+    });
+
+    it('throws an error when interpolating React components', function() {
+      var format = 'foo <p>%(para)s</p> bar';
+
+      assert.throws(function() {
+        render(Interpolate({ unsafe: true, para: React.DOM.span(null, 'baz') }, format));
+      }, /cannot interpolate/i);
     });
   });
 
