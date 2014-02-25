@@ -2,6 +2,7 @@
 
 var React     = require('react');
 var invariant = require('react/lib/invariant');
+var extend    = require('extend');
 
 function isString(object) {
   return Object.prototype.toString.call(object) === '[object String]';
@@ -21,17 +22,27 @@ var Interpolate = React.createClass({
   },
 
   render: function() {
-    var props  = this.props;
-    var format = props.children;
-    var parent = props.component;
-    var unsafe = props.unsafe === true;
-    var content;
+    var format = this.props.children;
+    var parent = this.props.component;
+    var unsafe = this.props.unsafe === true;
+    var props  = extend({}, this.props);
+
+    delete props.children;
+    delete props.component;
+    delete props.unsafe;
 
     invariant(isString(format), 'Interpolate expects a format string as only child');
 
     if (unsafe) {
-      content = format.split(REGEXP).reduce(function(memo, match, index) {
-        var html = (index % 2 === 0) ? match : props[match];
+      var content = format.split(REGEXP).reduce(function(memo, match, index) {
+        var html;
+
+        if (index % 2 === 0) {
+          html = match;
+        } else {
+          html = props[match];
+          delete props[match];
+        }
 
         if (React.isValidComponent(html)) {
           throw new Error('cannot interpolate a React component into unsafe text');
@@ -42,25 +53,30 @@ var Interpolate = React.createClass({
         return memo;
       }, '');
 
-      return this.transferPropsTo(parent({ dangerouslySetInnerHTML: { __html: content } }));
-    } else {
-      content = format.split(REGEXP).reduce(function(memo, match, index) {
-        var child = (index % 2 === 0) ? match : props[match];
+      props.dangerouslySetInnerHTML = { __html: content };
 
-        if (!React.isValidComponent(child)) {
+      return parent(props);
+    } else {
+      var args = format.split(REGEXP).reduce(function(memo, match, index) {
+        var child;
+
+        if (index % 2 === 0) {
           if (match.length === 0) {
             return memo;
           }
 
-          child = React.DOM.span(null, child);
+          child = match;
+        } else {
+          child = props[match];
+          delete props[match];
         }
 
-        memo['_' + index] = child;
+        memo.push(child);
 
         return memo;
-      }, {});
+      }, [props]);
 
-      return this.transferPropsTo(parent(null, content));
+      return parent.apply(null, args);
     }
   }
 });

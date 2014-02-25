@@ -6,27 +6,56 @@ var render      = React.renderComponentToString;
 // hack: suppress React console warnings
 console.warn = function() {};
 
-assert.matches = function(actual, expected, message) {
-  if (!expected.test(actual)) {
-    assert.fail(actual, expected, message, '!~');
+assert.matches = function(regexp, value, message) {
+  if (!regexp.test(value)) {
+    assert.fail(value, regexp, message, '=~');
   }
 };
 
-assert.doesNotMatch = function(actual, expected, message) {
-  if (expected.test(actual)) {
-    assert.fail(actual, expected, message, '=~');
+assert.doesNotMatch = function(regexp, value, message) {
+  if (regexp.test(value)) {
+    assert.fail(value, regexp, message, '!~');
   }
 };
 
 describe('The Interpolate component', function() {
-  it('transfers props to the container component', function() {
-    var markup = render(Interpolate({ className: 'foo' }, 'bar'));
-    assert.matches(markup, /^<span [^>]*?class="foo"/);
+  it('does not mutate props', function() {
+    var props  = { className: 'foo', name: 'bar', value: 'baz', children: '%(name)s: %(value)s' };
+    var markup = render(Interpolate(props));
+
+    assert.deepEqual(props, { className: 'foo', name: 'bar', value: 'baz', children: '%(name)s: %(value)s' });
+
+    props.unsafe = true;
+    markup = render(Interpolate(props));
+
+    assert.deepEqual(props, { className: 'foo', name: 'bar', value: 'baz', children: '%(name)s: %(value)s', unsafe: true });
+  });
+
+  it('transfers props to the container component that are not interpolation names', function() {
+    var props  = { className: 'foo', name: 'bar', value: 'baz' };
+    var format = '%(name)s: %(value)s';
+    var markup = render(Interpolate(props, format));
+
+    assert.matches(/^<span [^>]*?class="foo"/, markup);
+    assert.doesNotMatch(/\sname="/, markup);
+    assert.doesNotMatch(/\svalue="/, markup);
+
+    props.unsafe = true;
+    markup = render(Interpolate(props, format));
+
+    assert.matches(/^<span [^>]*?class="foo"/, markup);
+    assert.doesNotMatch(/\sname="/, markup);
+    assert.doesNotMatch(/\svalue="/, markup);
+  });
+
+  it('renders a `span` HTML element as container by default', function() {
+    var markup = render(Interpolate(null, 'bar'));
+    assert.matches(/^<span\s/, markup);
   });
 
   it('allows a custom container component to be set as prop', function() {
     var markup = render(Interpolate({ component: React.DOM.section }, 'bar'));
-    assert.matches(markup, /^<section/);
+    assert.matches(/^<section\s/, markup);
   });
 
   it('rejects everything as child that is not a string', function() {
@@ -43,19 +72,19 @@ describe('The Interpolate component', function() {
   });
 
   it('interpolates properly', function() {
-    var props  = { foo: "bar", number: 42, comp: React.DOM.i(null, 'baz'), no: 'NO' };
+    var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), no: 'NO' };
     var format = 'lala %(foo)s lulu %(comp)s lili %(number)s lele';
     var markup = render(Interpolate(props, format));
 
-    assert.matches(markup, /lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/);
-    assert.doesNotMatch(markup, /%\(|\)s|foo|comp|number|no|NO/);
+    assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
+    assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
   });
 
   it('escapes HTML markup in the format string by default', function() {
     var format = 'foo <script>alert("Danger!");</script> bar';
     var markup = render(Interpolate(null, format));
 
-    assert.doesNotMatch(markup, /<\/?script>/);
+    assert.doesNotMatch(/<\/?script>/, markup);
   });
 
   describe('when providing an `unsafe` prop set to `true`', function() {
@@ -63,7 +92,7 @@ describe('The Interpolate component', function() {
       var format = 'foo <script>alert("%(alert)s");</script> bar';
       var markup = render(Interpolate({ unsafe: true, alert: 'Danger!' }, format));
 
-      assert.matches(markup, /<script>alert\("Danger!"\);<\/script>/);
+      assert.matches(/<script>alert\("Danger!"\);<\/script>/, markup);
     });
 
     it('throws an error when interpolating React components', function() {
