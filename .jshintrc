@@ -4,6 +4,7 @@
   "asi": false,
   "expr": true,
   "globalstrict": true,
+  "newcap": false,
   "globals": {
     "window": false,
     "require": false,
@@ -15,6 +16,8 @@
     "setTimeout": false,
     "clearTimeout": false,
     "setInterval": false,
-    "clearInterval": false
+    "clearInterval": false,
+    "alert": false,
+    "__dirname": false
   }
 }

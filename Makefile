@@ -6,7 +6,7 @@ test: lint
 	@$(BIN)/mocha -t 5000 -b -R spec spec.js
 
 lint:
-	@$(BIN)/jshint index.js
+	@$(BIN)/jsxhint index.js example/
 
 install link:
 	@npm $@
