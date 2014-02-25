@@ -51,9 +51,15 @@ The MyApp component shown above renders the following (simplified) HTML:
 </div>
 ```
 
-All props get transferred to Interpolate's container component (which is a `<span>` by default).
+All props that are not interpolation arguments get transferred to Interpolate's container component (which is a `<span>` by default).
 
-For security reasons, all HTML markup present in the format string will be escaped. You can undermine this by providing a prop named "unsafe" which is set to `true`.
+Alternatively to providing the format string as child, you can also set the `format` prop to the desired format:
+
+```html
+<Interpolate name="Martin" format="Hello, %(name)s!" />
+```
+
+For security reasons, all HTML markup present in the format string will be escaped. You can undermine this by providing a prop named "unsafe" which is set to `true`. There's one caveat when allowing unsafe format strings: You cannot use other React components as interpolation values.
 
 
 ## Example

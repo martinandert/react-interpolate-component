@@ -13,25 +13,22 @@ var REGEXP = /\%\((.+?)\)s/;
 var Interpolate = React.createClass({
   displayName: 'Interpolate',
 
-  propTypes: {
-    children: React.PropTypes.string.isRequired
-  },
-
   getDefaultProps: function() {
     return { component: React.DOM.span };
   },
 
   render: function() {
-    var format = this.props.children;
+    var format = this.props.children || this.props.format;
     var parent = this.props.component;
     var unsafe = this.props.unsafe === true;
     var props  = extend({}, this.props);
 
     delete props.children;
+    delete props.format;
     delete props.component;
     delete props.unsafe;
 
-    invariant(isString(format), 'Interpolate expects a format string as only child');
+    invariant(isString(format), 'Interpolate expects either a format string as only child or a `format` prop with a string value');
 
     if (unsafe) {
       var content = format.split(REGEXP).reduce(function(memo, match, index) {

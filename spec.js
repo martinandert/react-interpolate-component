@@ -31,7 +31,7 @@ describe('The Interpolate component', function() {
     assert.deepEqual(props, { className: 'foo', name: 'bar', value: 'baz', children: '%(name)s: %(value)s', unsafe: true });
   });
 
-  it('transfers props to the container component that are not interpolation names', function() {
+  it('transfers those props to the container component that are not interpolation arguments', function() {
     var props  = { className: 'foo', name: 'bar', value: 'baz' };
     var format = '%(name)s: %(value)s';
     var markup = render(Interpolate(props, format));
@@ -58,26 +58,39 @@ describe('The Interpolate component', function() {
     assert.matches(/^<section\s/, markup);
   });
 
-  it('rejects everything as child that is not a string', function() {
+  it('allows a `format` prop instead of children', function() {
+    assert.doesNotThrow(function() {
+      render(Interpolate({ format: 'foo' }));
+    });
+  });
+
+  it('rejects everything as format that is not a string', function() {
     // How can something like this be properly testet?
     [undefined, null, {}, [], function() {}, new Date, true, 123].forEach(function(object) {
       assert.throws(function() { render(Interpolate(null, object)); }, /invariant/i);
+      assert.throws(function() { render(Interpolate({ format: object })); }, /invariant/i);
     });
   });
 
-  it('allows an empty string as a child', function() {
-    assert.doesNotThrow(function() {
-      render(Interpolate(null, ''));
+  describe('with format set as child', function() {
+    it('interpolates properly', function() {
+      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), no: 'NO' };
+      var format = 'lala %(foo)s lulu %(comp)s lili %(number)s lele';
+      var markup = render(Interpolate(props, format));
+
+      assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
+      assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
     });
   });
 
-  it('interpolates properly', function() {
-    var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), no: 'NO' };
-    var format = 'lala %(foo)s lulu %(comp)s lili %(number)s lele';
-    var markup = render(Interpolate(props, format));
+  describe('with format set as prop', function() {
+    it('interpolates properly', function() {
+      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), no: 'NO', format: 'lala %(foo)s lulu %(comp)s lili %(number)s lele' };
+      var markup = render(Interpolate(props));
 
-    assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
-    assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
+      assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
+      assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
+    });
   });
 
   it('escapes HTML markup in the format string by default', function() {
