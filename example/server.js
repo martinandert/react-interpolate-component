@@ -1,3 +1,5 @@
+'use strict';
+
 var express     = require('express');
 var browserify  = require('connect-browserify');
 var reactify    = require('reactify');

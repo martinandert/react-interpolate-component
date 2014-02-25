@@ -1,17 +1,34 @@
 /** @jsx React.DOM */
 
+'use strict';
+
 var React       = require('react');
 var Interpolate = require('../');
+
+var PersonName = React.createClass({
+  handleClick: function(e) {
+    alert('You clicked on: ' + this.props.name);
+  },
+
+  render: function() {
+    return <strong onClick={this.handleClick}>{this.props.name}</strong>;
+  }
+});
 
 var PeopleList = React.createClass({
   render: function() {
     var items = this.props.people.map(function(person, i) {
-      var name = <strong>{person.name}</strong>;
+      var name = <PersonName name={person.name} />;
 
       return <Interpolate key={i} className="foo" firstName={name} age={person.age} component={React.DOM.li}>{this.props.format}</Interpolate>;
     }.bind(this));
 
-    return <ul>{items}</ul>;
+    return (
+      <section>
+        <h1>List of People</h1>
+        <ul>{items}</ul>
+      </section>
+    );
   }
 });
 
@@ -23,7 +40,8 @@ var App = React.createClass({
       { name: 'Frank', age: 33 }
     ];
 
-    var format = "%(firstName)s is %(age)s years old.";
+    var personFormat = '%(firstName)s is %(age)s years old.';
+    var unsafeFormat = 'In this interpolated sentence, some <i>%(what)s has been used</i> as format.';
 
     return (
       <html>
@@ -35,8 +53,8 @@ var App = React.createClass({
         </head>
 
         <body>
-          <h1>List of People</h1>
-          <PeopleList people={people} format={format} />
+          <PeopleList people={people} format={personFormat} />
+          <Interpolate unsafe={true} what="HTML markup" component={React.DOM.p} format={unsafeFormat} />
         </body>
       </html>
     );
@@ -46,7 +64,7 @@ var App = React.createClass({
 if (typeof window !== 'undefined') {
   window.onload = function() {
     React.renderComponent(<App />, document);
-  }
+  };
 }
 
 module.exports = App;
