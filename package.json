@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "semver": "~3.0.1",
-    "node-dev": "~2.1.6",
+    "node-dev": "~2.3.0",
     "jsxhint": "~0.4.3",
     "mocha": "~1.21.3",
     "connect-browserify": "~3.2.0",
