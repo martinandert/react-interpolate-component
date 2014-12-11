@@ -1,6 +1,6 @@
 {
   "name": "react-interpolate-component",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A component for React that renders elements into a format string containing replacement fields",
   "main": "index.js",
   "repository": {
