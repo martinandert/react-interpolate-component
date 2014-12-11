@@ -2,13 +2,14 @@
 
 var React     = require('react');
 var invariant = require('react/lib/invariant');
-var extend    = require('object-assign');
+var except    = require('except');
 
 function isString(object) {
   return Object.prototype.toString.call(object) === '[object String]';
 }
 
 var REGEXP = /\%\((.+?)\)s/;
+var OMITTED_PROPS = ['children', 'format', 'component', 'unsafe'];
 
 var Interpolate = React.createClass({
   displayName: 'Interpolate',
@@ -21,12 +22,10 @@ var Interpolate = React.createClass({
     var format = this.props.children || this.props.format;
     var parent = this.props.component;
     var unsafe = this.props.unsafe === true;
-    var props  = extend({}, this.props);
+    var props  = except(this.props, OMITTED_PROPS);
 
-    delete props.children;
-    delete props.format;
-    delete props.component;
-    delete props.unsafe;
+    var matches = [];
+    var children = [];
 
     invariant(isString(format), 'Interpolate expects either a format string as only child or a `format` prop with a string value');
 
@@ -38,7 +37,7 @@ var Interpolate = React.createClass({
           html = match;
         } else {
           html = props[match];
-          delete props[match];
+          matches.push(match);
         }
 
         if (React.isValidElement(html)) {
@@ -51,10 +50,8 @@ var Interpolate = React.createClass({
       }, '');
 
       props.dangerouslySetInnerHTML = { __html: content };
-
-      return React.createElement(parent, props);
     } else {
-      var args = format.split(REGEXP).reduce(function(memo, match, index) {
+      format.split(REGEXP).reduce(function(memo, match, index) {
         var child;
 
         if (index % 2 === 0) {
@@ -65,16 +62,18 @@ var Interpolate = React.createClass({
           child = match;
         } else {
           child = props[match];
-          delete props[match];
+          matches.push(match);
         }
 
         memo.push(child);
 
         return memo;
-      }, [props]);
-
-      return React.createElement.apply(this, [parent].concat(args));
+      }, children);
     }
+
+    props = except(props, matches);
+
+    return React.createElement.apply(this, [parent, props].concat(children));
   }
 });
 
