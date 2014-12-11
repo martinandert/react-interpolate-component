@@ -66,6 +66,20 @@ describe('The Interpolate component', function() {
     });
   });
 
+  it('handles using the same named interpolation argument more than once correctly', function() {
+    var props  = { arg: 'test' };
+    var format = 'foo %(arg)s bar %(arg)s baz';
+    var markup = render(Interpolate(props, format));
+
+    assert.matches(/foo.*?test.*?bar.*?test.*?baz/, markup);
+
+    props.unsafe = true;
+    markup = render(Interpolate(props, format));
+
+    assert.matches(/foo test bar test baz/, markup);
+    assert.doesNotMatch(/undefined/, markup);
+  });
+
   it('rejects everything as format that is not a string', function() {
     // How can something like this be properly testet?
     [undefined, null, {}, [], function() {}, new Date, true, 123].forEach(function(object) {
@@ -117,9 +131,5 @@ describe('The Interpolate component', function() {
         render(Interpolate({ unsafe: true, para: React.DOM.span(null, 'baz') }, format));
       }, /cannot interpolate/i);
     });
-  });
-
-  it('is cool', function() {
-    assert(true);
   });
 });
