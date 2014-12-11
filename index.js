@@ -2,7 +2,7 @@
 
 var React     = require('react');
 var invariant = require('react/lib/invariant');
-var extend    = require('extend');
+var extend    = require('object-assign');
 
 function isString(object) {
   return Object.prototype.toString.call(object) === '[object String]';

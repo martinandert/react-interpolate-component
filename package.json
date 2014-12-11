@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/martinandert/react-interpolate-component",
   "dependencies": {
-    "extend": "~1.3.0"
+    "object-assign": "^2.0.0"
   },
   "peerDependencies": {
     "react": "^0.12.1"
