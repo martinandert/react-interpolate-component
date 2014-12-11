@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 'use strict';
 
 var React       = require('react');
@@ -20,7 +18,7 @@ var PeopleList = React.createClass({
     var items = this.props.people.map(function(person, i) {
       var name = <PersonName name={person.name} />;
 
-      return <Interpolate key={i} className="foo" firstName={name} age={person.age} component={React.DOM.li}>{this.props.format}</Interpolate>;
+      return <Interpolate key={i} className="foo" firstName={name} age={person.age} component="li">{this.props.format}</Interpolate>;
     }.bind(this));
 
     return (
@@ -54,7 +52,7 @@ var App = React.createClass({
 
         <body>
           <PeopleList people={people} format={personFormat} />
-          <Interpolate unsafe={true} what="HTML markup" component={React.DOM.p} format={unsafeFormat} />
+          <Interpolate what="HTML markup" component="p" format={unsafeFormat} unsafe />
         </body>
       </html>
     );
@@ -63,7 +61,7 @@ var App = React.createClass({
 
 if (typeof window !== 'undefined') {
   window.onload = function() {
-    React.renderComponent(<App />, document);
+    React.render(<App />, document);
   };
 }
 
