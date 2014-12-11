@@ -1,10 +1,12 @@
 var assert      = require('assert');
 var React       = require('react');
-var Interpolate = require('./');
-var render      = React.renderComponentToString;
+var Interpolate = React.createFactory(require('./'));
+var render      = React.renderToString;
 
-// hack: suppress React console warnings
-console.warn = function() {};
+// output React console warnings as failed assertions
+console.warn = function(message) {
+  assert(false, message);
+};
 
 assert.matches = function(regexp, value, message) {
   if (!regexp.test(value)) {
@@ -54,7 +56,7 @@ describe('The Interpolate component', function() {
   });
 
   it('allows a custom container component to be set as prop', function() {
-    var markup = render(Interpolate({ component: React.DOM.section }, 'bar'));
+    var markup = render(Interpolate({ component: 'section' }, 'bar'));
     assert.matches(/^<section\s/, markup);
   });
 

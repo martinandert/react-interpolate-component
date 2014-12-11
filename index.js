@@ -14,7 +14,7 @@ var Interpolate = React.createClass({
   displayName: 'Interpolate',
 
   getDefaultProps: function() {
-    return { component: React.DOM.span };
+    return { component: 'span' };
   },
 
   render: function() {
@@ -41,7 +41,7 @@ var Interpolate = React.createClass({
           delete props[match];
         }
 
-        if (React.isValidComponent(html)) {
+        if (React.isValidElement(html)) {
           throw new Error('cannot interpolate a React component into unsafe text');
         }
 
@@ -52,7 +52,7 @@ var Interpolate = React.createClass({
 
       props.dangerouslySetInnerHTML = { __html: content };
 
-      return parent(props);
+      return React.createElement(parent, props);
     } else {
       var args = format.split(REGEXP).reduce(function(memo, match, index) {
         var child;
@@ -73,7 +73,7 @@ var Interpolate = React.createClass({
         return memo;
       }, [props]);
 
-      return parent.apply(null, args);
+      return React.createElement.apply(this, [parent].concat(args));
     }
   }
 });
