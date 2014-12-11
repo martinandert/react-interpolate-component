@@ -23,9 +23,6 @@
     "email": "mandert@gmail.com"
   },
   "license": "MIT",
-  "scripts": {
-    "test": "make test"
-  },
   "bugs": {
     "url": "https://github.com/martinandert/react-interpolate-component/issues"
   },
