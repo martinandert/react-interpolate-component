@@ -80,6 +80,31 @@ describe('The Interpolate component', function() {
     assert.doesNotMatch(/undefined/, markup);
   });
 
+  it('has a working example in the README', function() {
+    var React       = require('react');
+    var Interpolate = React.createFactory(require('./'));
+
+    var MyApp = React.createClass({
+      render: function() {
+        var props = {
+          firstName: React.DOM.strong(null, 'Paul'),
+          age: 13,
+          unit: 'years',
+          component: 'p',  // default is a <span>
+          className: 'foo'
+        };
+
+        var format = '%(firstName)s is %(age)s %(unit)s old.';
+
+        return React.DOM.div(null, Interpolate(props, format));
+      }
+    });
+
+    var markup = React.renderToString(React.createFactory(MyApp)());
+
+    assert.matches(/<div[^>]+><p.*?class="foo"[^>]*><strong[^>]+>Paul<\/strong>.*? is .*?13.*? .*?years.*? old\..*?<\/p><\/div>/, markup);
+  });
+
   it('rejects everything as format that is not a string', function() {
     // How can something like this be properly testet?
     [undefined, null, {}, [], function() {}, new Date, true, 123].forEach(function(object) {

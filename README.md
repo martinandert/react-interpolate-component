@@ -22,15 +22,15 @@ Here is a small exemplification:
 
 ```js
 var React       = require('react');
-var Interpolate = require('react-interpolate-component');
+var Interpolate = React.createFactory(require('react-interpolate-component'));
 
 var MyApp = React.createClass({
   render: function() {
-    var props = { 
-      firstName: React.DOM.strong(null, 'Paul'), 
-      age: 13, 
+    var props = {
+      firstName: React.DOM.strong(null, 'Paul'),
+      age: 13,
       unit: 'years',
-      component: React.DOM.p,  // default is a <span>
+      component: 'p',  // default is a <span>
       className: 'foo'
     };
 
