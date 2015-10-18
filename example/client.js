@@ -1,6 +1,7 @@
 'use strict';
 
 var React       = require('react');
+var ReactDOM    = require('react-dom');
 var Interpolate = require('../');
 
 var PersonName = React.createClass({
@@ -61,7 +62,7 @@ var App = React.createClass({
 
 if (typeof window !== 'undefined') {
   window.onload = function() {
-    React.render(<App />, document);
+    ReactDOM.render(<App />, document);
   };
 }
 

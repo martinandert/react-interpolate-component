@@ -1,7 +1,8 @@
 var assert      = require('assert');
 var React       = require('react');
+var ReactDOM    = require('react-dom/server');
 var Interpolate = React.createFactory(require('./'));
-var render      = React.renderToString;
+var render      = ReactDOM.renderToString;
 
 // output React console warnings as failed assertions
 console.warn = function(message) {
@@ -100,7 +101,7 @@ describe('The Interpolate component', function() {
       }
     });
 
-    var markup = React.renderToString(React.createFactory(MyApp)());
+    var markup = render(React.createFactory(MyApp)());
 
     assert.matches(/<div[^>]+><p.*?class="foo"[^>]*><strong[^>]+>Paul<\/strong>.*? is .*?13.*? .*?years.*? old\..*?<\/p><\/div>/, markup);
   });
