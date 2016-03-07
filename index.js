@@ -19,13 +19,17 @@ var Interpolate = React.createClass({
   },
 
   render: function() {
-    var format = this.props.children || this.props.format;
+    var format = this.props.children;
     var parent = this.props.component;
     var unsafe = this.props.unsafe === true;
     var props  = except(this.props, OMITTED_PROPS);
 
     var matches = [];
     var children = [];
+
+    if (!isString(format)) {
+      format = this.props.format;
+    }
 
     invariant(isString(format), 'Interpolate expects either a format string as only child or a `format` prop with a string value');
 

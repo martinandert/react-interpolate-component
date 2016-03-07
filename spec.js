@@ -123,6 +123,13 @@ describe('The Interpolate component', function() {
       assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
       assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
     });
+
+    it('interpolates properly when child is an empty string', function() {
+      var props  = { foo: 'bar', number: 42 };
+      var markup = render(Interpolate(props, ''));
+
+      assert.matches(/<span[^>]*><\/span>/, markup);
+    });
   });
 
   describe('with format set as prop', function() {
@@ -132,6 +139,13 @@ describe('The Interpolate component', function() {
 
       assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
       assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
+    });
+
+    it('interpolates properly when prop is an empty string', function() {
+      var props  = { foo: 'bar', number: 42, format: '' };
+      var markup = render(Interpolate(props));
+
+      assert.matches(/<span[^>]*><\/span>/, markup);
     });
   });
 
