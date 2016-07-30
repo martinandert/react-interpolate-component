@@ -4,8 +4,8 @@ var ReactDOM    = require('react-dom/server');
 var Interpolate = React.createFactory(require('./'));
 var render      = ReactDOM.renderToString;
 
-// output React console warnings as failed assertions
-console.warn = function(message) {
+// hack: raise React console warnings as failed assertions
+console.error = function(message) {
   assert(false, message);
 };
 
@@ -116,36 +116,36 @@ describe('The Interpolate component', function() {
 
   describe('with format set as child', function() {
     it('interpolates properly', function() {
-      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), no: 'NO' };
+      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz') };
       var format = 'lala %(foo)s lulu %(comp)s lili %(number)s lele';
       var markup = render(Interpolate(props, format));
 
       assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
-      assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
+      assert.doesNotMatch(/%\(|\)s|foo|comp|number/, markup);
     });
 
     it('interpolates properly when child is an empty string', function() {
-      var props  = { foo: 'bar', number: 42 };
+      var props  = { component: 'div' };
       var markup = render(Interpolate(props, ''));
 
-      assert.matches(/<span[^>]*><\/span>/, markup);
+      assert.matches(/<div[^>]*><\/div>/, markup);
     });
   });
 
   describe('with format set as prop', function() {
     it('interpolates properly', function() {
-      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), no: 'NO', format: 'lala %(foo)s lulu %(comp)s lili %(number)s lele' };
+      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), format: 'lala %(foo)s lulu %(comp)s lili %(number)s lele' };
       var markup = render(Interpolate(props));
 
       assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
-      assert.doesNotMatch(/%\(|\)s|foo|comp|number|no|NO/, markup);
+      assert.doesNotMatch(/%\(|\)s|foo|comp|number/, markup);
     });
 
     it('interpolates properly when prop is an empty string', function() {
-      var props  = { foo: 'bar', number: 42, format: '' };
+      var props  = { component: 'div', format: '' };
       var markup = render(Interpolate(props));
 
-      assert.matches(/<span[^>]*><\/span>/, markup);
+      assert.matches(/<div[^>]*><\/div>/, markup);
     });
   });
 
