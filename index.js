@@ -3,13 +3,14 @@
 var React     = require('react');
 var invariant = require('fbjs/lib/invariant');
 var except    = require('except');
+var extend    = require('object-assign');
 
 function isString(object) {
   return Object.prototype.toString.call(object) === '[object String]';
 }
 
 var REGEXP = /\%\((.+?)\)s/;
-var OMITTED_PROPS = ['children', 'format', 'component', 'unsafe'];
+var OMITTED_PROPS = ['children', 'format', 'component', 'unsafe', 'with'];
 
 var Interpolate = React.createClass({
   displayName: 'Interpolate',
@@ -19,10 +20,11 @@ var Interpolate = React.createClass({
   },
 
   render: function() {
-    var format = this.props.children;
-    var parent = this.props.component;
-    var unsafe = this.props.unsafe === true;
-    var props  = except(this.props, OMITTED_PROPS);
+    var format         = this.props.children;
+    var parent         = this.props.component;
+    var unsafe         = this.props.unsafe === true;
+    var interpolations = extend({}, this.props, this.props.with);
+    var props          = except(this.props, OMITTED_PROPS);
 
     var matches = [];
     var children = [];
@@ -40,7 +42,7 @@ var Interpolate = React.createClass({
         if (index % 2 === 0) {
           html = match;
         } else {
-          html = props[match];
+          html = interpolations[match];
           matches.push(match);
         }
 
@@ -65,7 +67,7 @@ var Interpolate = React.createClass({
 
           child = match;
         } else {
-          child = props[match];
+          child = interpolations[match];
           matches.push(match);
         }
 

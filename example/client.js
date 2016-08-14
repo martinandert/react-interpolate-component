@@ -19,7 +19,7 @@ var PeopleList = React.createClass({
     var items = this.props.people.map(function(person, i) {
       var name = <PersonName name={person.name} />;
 
-      return <Interpolate key={i} className="foo" firstName={name} age={person.age} component="li">{this.props.format}</Interpolate>;
+      return <Interpolate key={i} className="foo" with={{ firstName: name, age: person.age }} component="li">{this.props.format}</Interpolate>;
     }.bind(this));
 
     return (
@@ -53,7 +53,7 @@ var App = React.createClass({
 
         <body>
           <PeopleList people={people} format={personFormat} />
-          <Interpolate what="HTML markup" component="p" format={unsafeFormat} unsafe />
+          <Interpolate with={{ what: "HTML markup" }} component="p" format={unsafeFormat} unsafe />
         </body>
       </html>
     );

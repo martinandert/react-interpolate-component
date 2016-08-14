@@ -16,7 +16,7 @@ Install via npm:
 
 The Interpolate component expects as only child a format string containing the placeholders to be interpolated. Like the format syntax of `sprintf` with named arguments, a placeholder is depicted as `'%(' + placeholder_name + ')s'`.
 
-The actual substitution elements are provided as props. These can be strings, numbers, dates, and even React components.
+The actual substitution elements are provided via the `with` prop. Values can be strings, numbers, dates, and even React components.
 
 Here is a small exemplification:
 
@@ -27,9 +27,11 @@ var Interpolate = React.createFactory(require('react-interpolate-component'));
 var MyApp = React.createClass({
   render: function() {
     var props = {
-      firstName: React.DOM.strong(null, 'Paul'),
-      age: 13,
-      unit: 'years',
+      with: {
+        firstName: React.DOM.strong(null, 'Paul'),
+        age: 13,
+        unit: 'years'
+      },
       component: 'p',  // default is a <span>
       className: 'foo'
     };
@@ -56,7 +58,7 @@ All props that are not interpolation arguments get transferred to Interpolate's 
 Alternatively to providing the format string as child, you can also set the `format` prop to the desired format:
 
 ```html
-<Interpolate name="Martin" format="Hello, %(name)s!" />
+<Interpolate with={{ name: "Martin" }} format="Hello, %(name)s!" />
 ```
 
 For security reasons, all HTML markup present in the format string will be escaped. You can undermine this by providing a prop named "unsafe" which is set to `true`. There's one caveat when allowing unsafe format strings: You cannot use other React components as interpolation values.

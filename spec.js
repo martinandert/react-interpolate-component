@@ -23,19 +23,19 @@ assert.doesNotMatch = function(regexp, value, message) {
 
 describe('The Interpolate component', function() {
   it('does not mutate props', function() {
-    var props  = { className: 'foo', name: 'bar', value: 'baz', children: '%(name)s: %(value)s' };
+    var props  = { className: 'foo', with: { name: 'bar', value: 'baz' }, children: '%(name)s: %(value)s' };
     var markup = render(Interpolate(props));
 
-    assert.deepEqual(props, { className: 'foo', name: 'bar', value: 'baz', children: '%(name)s: %(value)s' });
+    assert.deepEqual(props, { className: 'foo', with: { name: 'bar', value: 'baz' }, children: '%(name)s: %(value)s' });
 
     props.unsafe = true;
     markup = render(Interpolate(props));
 
-    assert.deepEqual(props, { className: 'foo', name: 'bar', value: 'baz', children: '%(name)s: %(value)s', unsafe: true });
+    assert.deepEqual(props, { className: 'foo', with: { name: 'bar', value: 'baz' }, children: '%(name)s: %(value)s', unsafe: true });
   });
 
   it('transfers those props to the container component that are not interpolation arguments', function() {
-    var props  = { className: 'foo', name: 'bar', value: 'baz' };
+    var props  = { className: 'foo', with: { name: 'bar', value: 'baz' } };
     var format = '%(name)s: %(value)s';
     var markup = render(Interpolate(props, format));
 
@@ -68,7 +68,7 @@ describe('The Interpolate component', function() {
   });
 
   it('handles using the same named interpolation argument more than once correctly', function() {
-    var props  = { arg: 'test' };
+    var props  = { with: { arg: 'test' } };
     var format = 'foo %(arg)s bar %(arg)s baz';
     var markup = render(Interpolate(props, format));
 
@@ -88,9 +88,11 @@ describe('The Interpolate component', function() {
     var MyApp = React.createClass({
       render: function() {
         var props = {
-          firstName: React.DOM.strong(null, 'Paul'),
-          age: 13,
-          unit: 'years',
+          with: {
+            firstName: React.DOM.strong(null, 'Paul'),
+            age: 13,
+            unit: 'years'
+          },
           component: 'p',  // default is a <span>
           className: 'foo'
         };
@@ -116,7 +118,7 @@ describe('The Interpolate component', function() {
 
   describe('with format set as child', function() {
     it('interpolates properly', function() {
-      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz') };
+      var props  = { with: { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz') } };
       var format = 'lala %(foo)s lulu %(comp)s lili %(number)s lele';
       var markup = render(Interpolate(props, format));
 
@@ -134,7 +136,7 @@ describe('The Interpolate component', function() {
 
   describe('with format set as prop', function() {
     it('interpolates properly', function() {
-      var props  = { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz'), format: 'lala %(foo)s lulu %(comp)s lili %(number)s lele' };
+      var props  = { with: { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz') }, format: 'lala %(foo)s lulu %(comp)s lili %(number)s lele' };
       var markup = render(Interpolate(props));
 
       assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
