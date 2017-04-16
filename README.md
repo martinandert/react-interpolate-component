@@ -22,13 +22,13 @@ Here is a small exemplification:
 
 ```js
 var React       = require('react');
-var Interpolate = React.createFactory(require('react-interpolate-component'));
+var Interpolate = require('react-interpolate-component');
 
-var MyApp = React.createClass({
-  render: function() {
-    var props = {
+class MyApp extends React.Component {
+  render() {
+    const props = {
       with: {
-        firstName: React.DOM.strong(null, 'Paul'),
+        firstName: <strong>Paul</strong>,
         age: 13,
         unit: 'years'
       },
@@ -36,11 +36,15 @@ var MyApp = React.createClass({
       className: 'foo'
     };
 
-    var format = '%(firstName)s is %(age)s %(unit)s old.';
-
-    return React.DOM.div(null, Interpolate(props, format));
+    return (
+      <div>
+        <Interpolate {...props}>
+          %(firstName)s is %(age)s %(unit)s old.
+        </Interpolate>
+      </div>
+    );
   }
-});
+}
 ```
 
 The MyApp component shown above renders the following (simplified) HTML:
