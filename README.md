@@ -20,7 +20,7 @@ The actual substitution elements are provided via the `with` prop. Values can be
 
 Here is a small exemplification:
 
-```js
+```jsx
 var React       = require('react');
 var Interpolate = require('react-interpolate-component');
 
