@@ -1,8 +1,9 @@
-var assert      = require('assert');
-var React       = require('react');
-var ReactDOM    = require('react-dom/server');
+var assert = require('assert');
+var React = require('react');
+var ReactDOM = require('react-dom/server');
 var Interpolate = React.createFactory(require('./'));
-var render      = ReactDOM.renderToString;
+var render = ReactDOM.renderToString;
+var createReactClass = require('create-react-class');
 
 // hack: raise React console warnings as failed assertions
 console.error = function(message) {
@@ -85,7 +86,7 @@ describe('The Interpolate component', function() {
     var React       = require('react');
     var Interpolate = React.createFactory(require('./'));
 
-    var MyApp = React.createClass({
+    var MyApp = createReactClass({
       render: function() {
         var props = {
           with: {

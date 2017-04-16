@@ -1,10 +1,11 @@
 'use strict';
 
-var React       = require('react');
-var ReactDOM    = require('react-dom');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var createReactClass = require('create-react-class');
 var Interpolate = require('../');
 
-var PersonName = React.createClass({
+var PersonName = createReactClass({
   handleClick: function(e) {
     alert('You clicked on: ' + this.props.name);
   },
@@ -14,7 +15,7 @@ var PersonName = React.createClass({
   }
 });
 
-var PeopleList = React.createClass({
+var PeopleList = createReactClass({
   render: function() {
     var items = this.props.people.map(function(person, i) {
       var name = <PersonName name={person.name} />;
@@ -31,7 +32,7 @@ var PeopleList = React.createClass({
   }
 });
 
-var App = React.createClass({
+var App = createReactClass({
   render: function() {
     var people = [
       { name: 'Peter', age: 21 },

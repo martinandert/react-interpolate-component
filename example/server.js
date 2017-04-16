@@ -1,10 +1,10 @@
 'use strict';
 
-var express     = require('express');
-var browserify  = require('connect-browserify');
-var reactify    = require('reactify');
-var React       = require('react');
-var ReactDOM    = require('react-dom/server');
+var express = require('express');
+var browserify = require('connect-browserify');
+var reactify = require('reactify');
+var React = require('react');
+var ReactDOM = require('react-dom/server');
 
 require('node-jsx').install();
 

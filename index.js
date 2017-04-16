@@ -1,9 +1,10 @@
 'use strict';
 
-var React     = require('react');
-var invariant = require('fbjs/lib/invariant');
-var except    = require('except');
-var extend    = require('object-assign');
+var React = require('react');
+var invariant = require('invariant');
+var except = require('except');
+var extend = require('object-assign');
+var createReactClass = require('create-react-class');
 
 function isString(object) {
   return Object.prototype.toString.call(object) === '[object String]';
@@ -12,7 +13,7 @@ function isString(object) {
 var REGEXP = /\%\((.+?)\)s/;
 var OMITTED_PROPS = ['children', 'format', 'component', 'unsafe', 'with'];
 
-var Interpolate = React.createClass({
+var Interpolate = createReactClass({
   displayName: 'Interpolate',
 
   getDefaultProps: function() {
