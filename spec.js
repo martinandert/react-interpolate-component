@@ -90,7 +90,7 @@ describe('The Interpolate component', function() {
       render: function() {
         var props = {
           with: {
-            firstName: React.DOM.strong(null, 'Paul'),
+            firstName: React.createElement('strong', null, 'Paul'),
             age: 13,
             unit: 'years'
           },
@@ -100,13 +100,15 @@ describe('The Interpolate component', function() {
 
         var format = '%(firstName)s is %(age)s %(unit)s old.';
 
-        return React.DOM.div(null, Interpolate(props, format));
+        return React.createElement('div', null, Interpolate(props, format));
       }
     });
 
     var markup = render(React.createFactory(MyApp)());
-
-    assert.matches(/<div[^>]+><p.*?class="foo"[^>]*><strong[^>]+>Paul<\/strong>.*? is .*?13.*? .*?years.*? old\..*?<\/p><\/div>/, markup);
+    assert.matches(
+      /<div[^>]+><p.*?class="foo"[^>]*><strong>Paul<\/strong>.*? is .*?13.*? .*?years.*? old\..*?<\/p><\/div>/,
+      markup
+    );
   });
 
   it('rejects everything as format that is not a string', function() {
@@ -119,7 +121,9 @@ describe('The Interpolate component', function() {
 
   describe('with format set as child', function() {
     it('interpolates properly', function() {
-      var props  = { with: { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz') } };
+      var props = {
+        with: { foo: 'bar', number: 42, comp: React.createElement('i', null, 'baz') }
+      };
       var format = 'lala %(foo)s lulu %(comp)s lili %(number)s lele';
       var markup = render(Interpolate(props, format));
 
@@ -137,7 +141,10 @@ describe('The Interpolate component', function() {
 
   describe('with format set as prop', function() {
     it('interpolates properly', function() {
-      var props  = { with: { foo: 'bar', number: 42, comp: React.DOM.i(null, 'baz') }, format: 'lala %(foo)s lulu %(comp)s lili %(number)s lele' };
+      var props = {
+        with: { foo: 'bar', number: 42, comp: React.createElement('i', null, 'baz') },
+        format: 'lala %(foo)s lulu %(comp)s lili %(number)s lele'
+      };
       var markup = render(Interpolate(props));
 
       assert.matches(/lala .*?bar.*? lulu .*?baz.*? lili .*?42.*? lele/, markup);
@@ -171,7 +178,12 @@ describe('The Interpolate component', function() {
       var format = 'foo <p>%(para)s</p> bar';
 
       assert.throws(function() {
-        render(Interpolate({ unsafe: true, para: React.DOM.span(null, 'baz') }, format));
+        render(
+          Interpolate(
+            { unsafe: true, para: React.createElement('span', null, 'baz') },
+            format
+          )
+        );
       }, /cannot interpolate/i);
     });
   });
